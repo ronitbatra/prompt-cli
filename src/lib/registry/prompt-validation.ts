@@ -60,9 +60,7 @@ export function validatePromptVersion(
   // Validate: variables declared in metadata should match template variables
   if (declaredVariables.length > 0) {
     // Check for variables in template but not declared in metadata
-    const undeclared = templateVarArray.filter(
-      (v) => !declaredVarSet.has(v)
-    );
+    const undeclared = templateVarArray.filter((v) => !declaredVarSet.has(v));
     if (undeclared.length > 0) {
       warnings.push(
         `Template uses variables not declared in metadata: ${undeclared.join(", ")}`
@@ -70,9 +68,7 @@ export function validatePromptVersion(
     }
 
     // Check for variables declared in metadata but not used in template
-    const unused = declaredVarArray.filter(
-      (v) => !templateVariables.has(v)
-    );
+    const unused = declaredVarArray.filter((v) => !templateVariables.has(v));
     if (unused.length > 0) {
       warnings.push(
         `Metadata declares variables not used in template: ${unused.join(", ")}`
@@ -171,5 +167,3 @@ export function validateVariablesProvided(
 export function getTemplateVariables(template: string): string[] {
   return Array.from(extractVariables(template)).sort();
 }
-
-

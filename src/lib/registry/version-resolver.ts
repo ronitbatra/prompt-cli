@@ -181,5 +181,3 @@ export function normalizePromptRef(
   const resolved = resolvePromptVersion(workspaceRoot, promptRef, config);
   return resolved.reference;
 }
-
-

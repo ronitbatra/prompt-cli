@@ -55,11 +55,7 @@ describe("Version Resolver", () => {
       promptName,
       version
     );
-    fs.writeFileSync(
-      metadataPath,
-      JSON.stringify(metadata, null, 2),
-      "utf-8"
-    );
+    fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), "utf-8");
   }
 
   describe("resolvePromptVersion", () => {
@@ -296,7 +292,7 @@ describe("Version Resolver", () => {
       const promptsDir = path.join(testDir, "prompts");
       const promptDir = path.join(promptsDir, "empty");
       fs.mkdirSync(promptDir, { recursive: true });
-      
+
       // Create an invalid version directory (not matching v\d+ pattern)
       const invalidVersionDir = path.join(promptDir, "invalid");
       fs.mkdirSync(invalidVersionDir, { recursive: true });
@@ -361,4 +357,3 @@ describe("Version Resolver", () => {
     });
   });
 });
-

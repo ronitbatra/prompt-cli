@@ -191,9 +191,9 @@ describe("Prompt Validation", () => {
       const result = validatePromptVersion(promptVersion);
       expect(result.isValid).toBe(true);
       expect(result.warnings.length).toBeGreaterThan(0);
-      expect(
-        result.warnings.some((w) => w.includes("not declared"))
-      ).toBe(true);
+      expect(result.warnings.some((w) => w.includes("not declared"))).toBe(
+        true
+      );
     });
 
     it("should handle perfect match between template and metadata variables", () => {
@@ -293,4 +293,3 @@ describe("Prompt Validation", () => {
     });
   });
 });
-
