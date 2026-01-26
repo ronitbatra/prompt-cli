@@ -79,7 +79,9 @@ describe("Evaluation Schema Validation", () => {
       const result = validateExpectation(expectation);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors.some((e) => e.includes("Invalid expectation type"))).toBe(true);
+      expect(
+        result.errors.some((e) => e.includes("Invalid expectation type"))
+      ).toBe(true);
     });
 
     it("should reject non-object expectation", () => {
@@ -153,7 +155,9 @@ describe("Evaluation Schema Validation", () => {
       const result = validateFixture(fixture);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain("Fixture must have an 'expectations' field");
+      expect(result.errors).toContain(
+        "Fixture must have an 'expectations' field"
+      );
     });
 
     it("should warn about empty expectations", () => {

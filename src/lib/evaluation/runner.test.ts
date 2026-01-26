@@ -201,6 +201,33 @@ describe("Evaluation Runner", () => {
       );
     });
 
+    it("should capture latency and token usage", async () => {
+      const fixtures: EvaluationFixture[] = [
+        {
+          prompt: "test-prompt@v1",
+          variables: { userName: "Alice" },
+          expectations: [],
+        },
+      ];
+
+      const result = await runEvaluation(fixtures, testDir, config, {
+        provider,
+      });
+
+      // Check fixture result has latency and tokens
+      expect(result.fixtureResults[0].latency).toBeDefined();
+      expect(result.fixtureResults[0].tokens).toBeDefined();
+      expect(result.fixtureResults[0].tokens?.input).toBeGreaterThan(0);
+      expect(result.fixtureResults[0].tokens?.output).toBeGreaterThan(0);
+      expect(result.fixtureResults[0].tokens?.total).toBeGreaterThan(0);
+
+      // Check aggregated statistics
+      expect(result.averageLatency).toBeDefined();
+      expect(result.totalLatency).toBeDefined();
+      expect(result.totalTokens).toBeDefined();
+      expect(result.totalTokens?.total).toBeGreaterThan(0);
+    });
+
     it("should stop on error when configured", async () => {
       const fixtures: EvaluationFixture[] = [
         {
@@ -263,12 +290,9 @@ describe("Evaluation Runner", () => {
 
       fs.writeFileSync(jsonlPath, JSON.stringify(fixture) + "\n", "utf-8");
 
-      const result = await runEvaluationFromFile(
-        jsonlPath,
-        testDir,
-        config,
-        { provider }
-      );
+      const result = await runEvaluationFromFile(jsonlPath, testDir, config, {
+        provider,
+      });
 
       expect(result.totalFixtures).toBe(1);
       expect(result.passedFixtures).toBe(1);

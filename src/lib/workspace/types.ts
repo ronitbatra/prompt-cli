@@ -31,6 +31,27 @@ export interface WorkspaceMetadata {
 export interface ProviderConfig {
   /** Provider type: "mock" for testing, "openai", "anthropic" for real providers */
   type?: "mock" | "openai" | "anthropic";
+
+  /** Optional name for this provider instance */
+  name?: string;
+
+  /** OpenAI-specific configuration (only used when type is "openai") */
+  openai?: {
+    /** Model to use (default: "gpt-3.5-turbo") */
+    model?: string;
+
+    /** Temperature for generation (0-2, default: 1) */
+    temperature?: number;
+
+    /** Maximum tokens in response */
+    maxTokens?: number;
+
+    /** Base URL for API (default: "https://api.openai.com/v1") */
+    baseURL?: string;
+
+    /** API key (optional, will use OPENAI_API_KEY env var if not provided) */
+    apiKey?: string;
+  };
 }
 
 /**

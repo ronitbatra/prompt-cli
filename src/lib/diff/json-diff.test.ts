@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  diffJson,
-  formatJsonDiff,
-  getJsonDiffSummary,
-} from "./json-diff";
+import { diffJson, formatJsonDiff, getJsonDiffSummary } from "./json-diff";
 import type { PromptMetadata } from "../types/prompt";
 
 describe("JSON Diff", () => {

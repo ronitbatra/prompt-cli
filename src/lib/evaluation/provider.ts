@@ -2,6 +2,12 @@
  * Provider interface and implementations for generating prompt outputs
  */
 
+import type { Provider as IProvider, ProviderType } from "./provider-types";
+
+// Re-export provider types for convenience
+export type { ProviderType, BaseProviderConfig } from "./provider-types";
+export { ProviderRegistry, providerRegistry } from "./provider-types";
+
 /**
  * Result of calling a provider
  */
@@ -39,16 +45,11 @@ export interface ProviderResult {
 
 /**
  * Provider interface for generating prompt outputs
+ *
+ * @deprecated Use Provider from ./provider-types instead
+ * This is kept for backward compatibility
  */
-export interface Provider {
-  /**
-   * Generate output for a given prompt
-   *
-   * @param prompt - The rendered prompt text
-   * @returns Promise resolving to provider result
-   */
-  generate(prompt: string): Promise<ProviderResult>;
-}
+export interface Provider extends IProvider {}
 
 /**
  * Configuration options for the mock provider
@@ -77,16 +78,20 @@ export interface MockProviderOptions {
 
 /**
  * Mock provider for testing and deterministic evaluation
- * 
+ *
  * This provider simulates LLM responses without calling external APIs.
  * It can be configured to return fixed responses, generate deterministic
  * outputs based on prompt content, or use custom response generators.
  */
-export class MockProvider implements Provider {
-  private options: Required<Omit<MockProviderOptions, "fixedResponse" | "responseGenerator">> &
+export class MockProvider implements IProvider {
+  private options: Required<
+    Omit<MockProviderOptions, "fixedResponse" | "responseGenerator">
+  > &
     Pick<MockProviderOptions, "fixedResponse" | "responseGenerator">;
+  private providerName?: string;
 
-  constructor(options: MockProviderOptions = {}) {
+  constructor(options: MockProviderOptions = {}, name?: string) {
+    this.providerName = name;
     this.options = {
       latency: options.latency ?? 100,
       deterministic: options.deterministic ?? true,
@@ -146,7 +151,7 @@ export class MockProvider implements Provider {
   private generateDeterministicResponse(prompt: string): string {
     // Simple hash function for determinism
     const hash = this.simpleHash(prompt);
-    
+
     // Generate response based on hash
     // This creates a deterministic but varied response
     const responses = [
@@ -184,14 +189,40 @@ export class MockProvider implements Provider {
     }
     return hash;
   }
+
+  /**
+   * Get the provider type
+   */
+  getType(): ProviderType {
+    return "mock";
+  }
+
+  /**
+   * Get the provider name
+   */
+  getName(): string | undefined {
+    return this.providerName;
+  }
+
+  /**
+   * Validate provider configuration
+   * Mock provider is always valid
+   */
+  validate(): void {
+    // Mock provider doesn't need validation
+  }
 }
 
 /**
  * Create a mock provider instance
  *
  * @param options - Configuration options
+ * @param name - Optional provider name
  * @returns Mock provider instance
  */
-export function createMockProvider(options?: MockProviderOptions): MockProvider {
-  return new MockProvider(options);
+export function createMockProvider(
+  options?: MockProviderOptions,
+  name?: string
+): MockProvider {
+  return new MockProvider(options, name);
 }

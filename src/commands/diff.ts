@@ -1,8 +1,5 @@
 import { Command, Args, Flags } from "@oclif/core";
-import {
-  discoverWorkspace,
-  loadConfig,
-} from "../lib/workspace";
+import { discoverWorkspace, loadConfig } from "../lib/workspace";
 import { loadPromptVersion } from "../lib/registry/prompt-discovery";
 import { diffText, formatDiff, getDiffSummary } from "../lib/diff/text-diff";
 import {
@@ -45,11 +42,13 @@ export default class Diff extends Command {
 
   static override args = {
     oldVersion: Args.string({
-      description: "Old prompt version (e.g., 'greeting@v1' or 'greeting' for latest)",
+      description:
+        "Old prompt version (e.g., 'greeting@v1' or 'greeting' for latest)",
       required: true,
     }),
     newVersion: Args.string({
-      description: "New prompt version (e.g., 'greeting@v2' or 'greeting' for latest)",
+      description:
+        "New prompt version (e.g., 'greeting@v2' or 'greeting' for latest)",
       required: true,
     }),
   };
@@ -87,7 +86,9 @@ export default class Diff extends Command {
       const newVersionStr = newVersion.version;
 
       // Show header with enhanced formatting
-      this.log(formatComparisonHeader(promptName, oldVersionStr, newVersionStr));
+      this.log(
+        formatComparisonHeader(promptName, oldVersionStr, newVersionStr)
+      );
 
       let hasAnyChanges = false;
 

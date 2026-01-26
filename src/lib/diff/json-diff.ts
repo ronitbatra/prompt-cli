@@ -172,10 +172,7 @@ function diffObjects(
   basePath: string
 ): JsonDiffResult {
   const changes: JsonDiffChange[] = [];
-  const allKeys = new Set([
-    ...Object.keys(oldObj),
-    ...Object.keys(newObj),
-  ]);
+  const allKeys = new Set([...Object.keys(oldObj), ...Object.keys(newObj)]);
 
   for (const key of allKeys) {
     const path = basePath ? `${basePath}.${key}` : key;

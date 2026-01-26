@@ -31,11 +31,12 @@ describe("JSONL Reader", () => {
   describe("readJsonlFile", () => {
     it("should read valid JSONL file", () => {
       const filePath = path.join(testDir, "test.jsonl");
-      const content = JSON.stringify({
-        prompt: "greeting@v1",
-        variables: { userName: "Alice" },
-        expectations: [{ type: "contains", value: "Alice" }],
-      }) + "\n";
+      const content =
+        JSON.stringify({
+          prompt: "greeting@v1",
+          variables: { userName: "Alice" },
+          expectations: [{ type: "contains", value: "Alice" }],
+        }) + "\n";
 
       fs.writeFileSync(filePath, content, "utf-8");
 
@@ -112,10 +113,11 @@ describe("JSONL Reader", () => {
 
     it("should handle invalid fixture schema", () => {
       const filePath = path.join(testDir, "test.jsonl");
-      const content = JSON.stringify({
-        // Missing required fields
-        prompt: "greeting@v1",
-      }) + "\n";
+      const content =
+        JSON.stringify({
+          // Missing required fields
+          prompt: "greeting@v1",
+        }) + "\n";
 
       fs.writeFileSync(filePath, content, "utf-8");
 
@@ -128,11 +130,12 @@ describe("JSONL Reader", () => {
 
     it("should collect warnings", () => {
       const filePath = path.join(testDir, "test.jsonl");
-      const content = JSON.stringify({
-        prompt: "greeting@v1",
-        variables: { userName: "Alice" },
-        expectations: [], // Empty expectations should generate warning
-      }) + "\n";
+      const content =
+        JSON.stringify({
+          prompt: "greeting@v1",
+          variables: { userName: "Alice" },
+          expectations: [], // Empty expectations should generate warning
+        }) + "\n";
 
       fs.writeFileSync(filePath, content, "utf-8");
 

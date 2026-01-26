@@ -12,6 +12,7 @@ import { renderTemplate } from "../renderer/template-renderer";
 import type { Provider } from "./provider";
 import { evaluateExpectations } from "./expectations";
 import type { PromptforgeConfig } from "../workspace/types";
+import { createProviderFromConfig } from "./provider-factory";
 
 /**
  * Options for running evaluations
@@ -19,8 +20,9 @@ import type { PromptforgeConfig } from "../workspace/types";
 export interface RunEvaluationOptions {
   /**
    * Provider to use for generating outputs
+   * If not provided, will be created from workspace config
    */
-  provider: Provider;
+  provider?: Provider;
 
   /**
    * Whether to stop on first error (default: false)
@@ -93,6 +95,8 @@ export async function evaluateFixture(
       output: providerResult.output,
       expectationResults,
       passed,
+      latency: providerResult.latency,
+      tokens: providerResult.tokens,
     };
   } catch (error) {
     return {
@@ -124,7 +128,10 @@ export async function runEvaluation(
   const startTime = Date.now();
 
   const fixtureResults: FixtureResult[] = [];
-  const { provider, continueOnError = true } = options;
+  const { continueOnError = true } = options;
+
+  // Create provider from config if not provided
+  const provider = options.provider || (await createProviderFromConfig(config));
 
   // Evaluate each fixture
   for (const fixture of fixtures) {
@@ -171,6 +178,38 @@ export async function runEvaluation(
   const failedFixtures = totalFixtures - passedFixtures;
   const passRate = totalFixtures > 0 ? passedFixtures / totalFixtures : 0;
 
+  // Aggregate token usage
+  const fixturesWithTokens = fixtureResults.filter((r) => r.tokens);
+  let totalTokens: EvaluationRunResult["totalTokens"] | undefined;
+  if (fixturesWithTokens.length > 0) {
+    const aggregated = fixturesWithTokens.reduce(
+      (acc, r) => {
+        if (r.tokens) {
+          acc.input += r.tokens.input;
+          acc.output += r.tokens.output;
+          acc.total += r.tokens.total;
+        }
+        return acc;
+      },
+      { input: 0, output: 0, total: 0 }
+    );
+    totalTokens = aggregated;
+  }
+
+  // Calculate latency statistics
+  const fixturesWithLatency = fixtureResults.filter(
+    (r) => r.latency !== undefined
+  );
+  let averageLatency: number | undefined;
+  let totalLatency: number | undefined;
+  if (fixturesWithLatency.length > 0) {
+    totalLatency = fixturesWithLatency.reduce(
+      (sum, r) => sum + (r.latency || 0),
+      0
+    );
+    averageLatency = totalLatency / fixturesWithLatency.length;
+  }
+
   const result: EvaluationRunResult = {
     startedAt,
     completedAt,
@@ -180,13 +219,21 @@ export async function runEvaluation(
     passedFixtures,
     failedFixtures,
     passRate,
+    totalTokens,
+    averageLatency,
+    totalLatency,
   };
 
   // Save results if configured
   if (options.saveResults !== false) {
     // Dynamic import to avoid circular dependencies
     const resultsModule = await import("./results.js");
-    resultsModule.saveResults(result, workspaceRoot, config, options.resultsFilename);
+    resultsModule.saveResults(
+      result,
+      workspaceRoot,
+      config,
+      options.resultsFilename
+    );
   }
 
   return result;
@@ -198,14 +245,14 @@ export async function runEvaluation(
  * @param jsonlFilePath - Path to the JSONL file
  * @param workspaceRoot - Root directory of the workspace
  * @param config - Workspace configuration
- * @param options - Evaluation options
+ * @param options - Evaluation options (provider is optional, will use config if not provided)
  * @returns Complete evaluation run result
  */
 export async function runEvaluationFromFile(
   jsonlFilePath: string,
   workspaceRoot: string,
   config: PromptforgeConfig,
-  options: RunEvaluationOptions
+  options: RunEvaluationOptions = {}
 ): Promise<EvaluationRunResult> {
   // Import here to avoid circular dependencies
   const { readJsonlFile } = await import("./jsonl-reader.js");
@@ -220,6 +267,6 @@ export async function runEvaluationFromFile(
     );
   }
 
-  // Run evaluation (results will be saved automatically if saveResults is true)
+  // Run evaluation (provider will be created from config if not provided)
   return runEvaluation(readResult.fixtures, workspaceRoot, config, options);
 }

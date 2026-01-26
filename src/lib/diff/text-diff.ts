@@ -51,17 +51,17 @@ export interface TextDiffResult {
 export function diffText(oldText: string, newText: string): TextDiffResult {
   // Split into lines, preserving empty lines
   // Handle empty strings specially - split("") returns [""], but we want []
-  const oldLines =
-    oldText === "" ? [] : oldText.split(/\r?\n/);
-  const newLines =
-    newText === "" ? [] : newText.split(/\r?\n/);
+  const oldLines = oldText === "" ? [] : oldText.split(/\r?\n/);
+  const newLines = newText === "" ? [] : newText.split(/\r?\n/);
 
   // Use longest common subsequence (LCS) algorithm for better diff
   const diff = computeLineDiff(oldLines, newLines);
 
   const addedCount = diff.filter((line) => line.type === "added").length;
   const removedCount = diff.filter((line) => line.type === "removed").length;
-  const unchangedCount = diff.filter((line) => line.type === "unchanged").length;
+  const unchangedCount = diff.filter(
+    (line) => line.type === "unchanged"
+  ).length;
 
   return {
     lines: diff,
@@ -80,10 +80,7 @@ export function diffText(oldText: string, newText: string): TextDiffResult {
  * @param newLines - Array of lines from new text
  * @returns Array of diff lines
  */
-function computeLineDiff(
-  oldLines: string[],
-  newLines: string[]
-): DiffLine[] {
+function computeLineDiff(oldLines: string[], newLines: string[]): DiffLine[] {
   const m = oldLines.length;
   const n = newLines.length;
 
@@ -109,8 +106,7 @@ function computeLineDiff(
         dp[i][j] = dp[i - 1][j - 1];
       } else {
         // Lines don't match - take minimum of insert, delete, or replace
-        dp[i][j] =
-          1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+        dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
       }
     }
   }
@@ -165,11 +161,7 @@ export function formatDiff(diff: TextDiffResult): string {
 
   for (const line of diff.lines) {
     const prefix =
-      line.type === "added"
-        ? "+"
-        : line.type === "removed"
-          ? "-"
-          : " ";
+      line.type === "added" ? "+" : line.type === "removed" ? "-" : " ";
 
     const lineNum = line.lineNumber ? ` ${line.lineNumber}` : "";
     lines.push(`${prefix}${lineNum} ${line.content}`);
@@ -191,10 +183,14 @@ export function getDiffSummary(diff: TextDiffResult): string {
 
   const parts: string[] = [];
   if (diff.addedCount > 0) {
-    parts.push(`${diff.addedCount} line${diff.addedCount > 1 ? "s" : ""} added`);
+    parts.push(
+      `${diff.addedCount} line${diff.addedCount > 1 ? "s" : ""} added`
+    );
   }
   if (diff.removedCount > 0) {
-    parts.push(`${diff.removedCount} line${diff.removedCount > 1 ? "s" : ""} removed`);
+    parts.push(
+      `${diff.removedCount} line${diff.removedCount > 1 ? "s" : ""} removed`
+    );
   }
 
   return parts.join(", ");

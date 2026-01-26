@@ -9,7 +9,7 @@ export const Colors = {
   reset: "\x1b[0m",
   bright: "\x1b[1m",
   dim: "\x1b[2m",
-  
+
   // Text colors
   red: "\x1b[31m",
   green: "\x1b[32m",
@@ -19,7 +19,7 @@ export const Colors = {
   cyan: "\x1b[36m",
   white: "\x1b[37m",
   gray: "\x1b[90m",
-  
+
   // Background colors
   bgRed: "\x1b[41m",
   bgGreen: "\x1b[42m",
@@ -39,7 +39,9 @@ export function colorize(text: string, color: string): string {
 export function createHeader(title: string, width = 50): string {
   const line = "━".repeat(width);
   const padding = Math.max(0, Math.floor((width - title.length - 2) / 2));
-  const header = ` ${title} `.padStart(title.length + padding + 1, "━").padEnd(width, "━");
+  const header = ` ${title} `
+    .padStart(title.length + padding + 1, "━")
+    .padEnd(width, "━");
   return `${Colors.cyan}${line}${Colors.reset}\n${Colors.bright}${Colors.cyan}${header}${Colors.reset}\n${Colors.cyan}${line}${Colors.reset}`;
 }
 
@@ -81,7 +83,7 @@ export function formatComparisonHeader(
   const name = colorize(promptName, Colors.bright);
   const oldVer = colorize(`@${oldVersion}`, Colors.yellow);
   const newVer = colorize(`@${newVersion}`, Colors.green);
-  
+
   return `\n${Colors.bright}Comparing${Colors.reset} ${name}${oldVer} ${arrow} ${name}${newVer}\n`;
 }
 
@@ -95,7 +97,10 @@ export function formatNoChanges(section: string): string {
 /**
  * Format line numbers in diff output
  */
-export function formatLineNumber(lineNum: number | undefined, prefix: string): string {
+export function formatLineNumber(
+  lineNum: number | undefined,
+  prefix: string
+): string {
   if (lineNum === undefined) {
     return prefix;
   }
@@ -119,10 +124,11 @@ export function formatMetadataChange(
   newValue?: unknown
 ): string {
   const pathParts = path.split(".");
-  const displayPath = pathParts.length > 1 
-    ? `${pathParts[0]}${Colors.gray}.${pathParts.slice(1).join(".")}${Colors.reset}`
-    : path;
-  
+  const displayPath =
+    pathParts.length > 1
+      ? `${pathParts[0]}${Colors.gray}.${pathParts.slice(1).join(".")}${Colors.reset}`
+      : path;
+
   switch (type) {
     case "added":
       return `${Colors.green}+${Colors.reset} ${displayPath}: ${Colors.green}${formatValue(newValue)}${Colors.reset}`;

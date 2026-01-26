@@ -1,8 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  formatEvaluationSummary,
-  formatCompactSummary,
-} from "./summary";
+import { formatEvaluationSummary, formatCompactSummary } from "./summary";
 import type {
   EvaluationRunResult,
   FixtureResult,
@@ -15,7 +12,7 @@ describe("Evaluation Summary", () => {
   ): EvaluationRunResult => {
     const passedFixtures = fixtureResults.filter((r) => r.passed).length;
     const totalFixtures = fixtureResults.length;
-    
+
     return {
       startedAt: "2024-01-01T00:00:00.000Z",
       completedAt: "2024-01-01T00:00:01.000Z",
@@ -156,9 +153,7 @@ describe("Evaluation Summary", () => {
 
   describe("formatCompactSummary", () => {
     it("should format compact summary for all passed", () => {
-      const result = createMockResult([
-        createMockFixture("greeting@v1", true),
-      ]);
+      const result = createMockResult([createMockFixture("greeting@v1", true)]);
 
       const summary = formatCompactSummary(result);
 

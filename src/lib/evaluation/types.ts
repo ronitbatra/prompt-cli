@@ -1,6 +1,6 @@
 /**
  * Evaluation fixture schema types
- * 
+ *
  * Evaluation fixtures are stored as JSONL (JSON Lines) files where each line
  * represents a single test case with a prompt reference, variables, and expectations.
  */
@@ -149,6 +149,31 @@ export interface FixtureResult {
    * Error message if fixture evaluation failed
    */
   error?: string;
+
+  /**
+   * Provider latency in milliseconds (if available)
+   */
+  latency?: number;
+
+  /**
+   * Token usage information (if available)
+   */
+  tokens?: {
+    /**
+     * Number of input tokens (prompt tokens)
+     */
+    input: number;
+
+    /**
+     * Number of output tokens (completion tokens)
+     */
+    output: number;
+
+    /**
+     * Total tokens
+     */
+    total: number;
+  };
 }
 
 /**
@@ -194,4 +219,34 @@ export interface EvaluationRunResult {
    * Overall pass rate (0-1)
    */
   passRate: number;
+
+  /**
+   * Aggregate token usage across all fixtures
+   */
+  totalTokens?: {
+    /**
+     * Total input tokens across all fixtures
+     */
+    input: number;
+
+    /**
+     * Total output tokens across all fixtures
+     */
+    output: number;
+
+    /**
+     * Total tokens across all fixtures
+     */
+    total: number;
+  };
+
+  /**
+   * Average latency per fixture in milliseconds
+   */
+  averageLatency?: number;
+
+  /**
+   * Total latency across all fixtures in milliseconds
+   */
+  totalLatency?: number;
 }

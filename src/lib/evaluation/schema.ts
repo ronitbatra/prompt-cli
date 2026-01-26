@@ -102,9 +102,7 @@ export function validateExpectation(
 /**
  * Validate an evaluation fixture
  */
-export function validateFixture(
-  fixture: unknown
-): SchemaValidationResult {
+export function validateFixture(fixture: unknown): SchemaValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -130,7 +128,11 @@ export function validateFixture(
   }
 
   // Validate variables field
-  if (!fix.variables || typeof fix.variables !== "object" || Array.isArray(fix.variables)) {
+  if (
+    !fix.variables ||
+    typeof fix.variables !== "object" ||
+    Array.isArray(fix.variables)
+  ) {
     errors.push("Fixture must have a 'variables' field (object)");
   }
 
@@ -149,11 +151,11 @@ export function validateFixture(
     expectations.forEach((exp, index) => {
       const result = validateExpectation(exp);
       if (!result.isValid) {
-        errors.push(
-          `Expectation ${index + 1}: ${result.errors.join(", ")}`
-        );
+        errors.push(`Expectation ${index + 1}: ${result.errors.join(", ")}`);
       }
-      warnings.push(...result.warnings.map((w) => `Expectation ${index + 1}: ${w}`));
+      warnings.push(
+        ...result.warnings.map((w) => `Expectation ${index + 1}: ${w}`)
+      );
     });
   }
 
@@ -163,7 +165,10 @@ export function validateFixture(
       errors.push("'metadata' must be an object if provided");
     } else {
       const metadata = fix.metadata as Record<string, unknown>;
-      if (metadata.description !== undefined && typeof metadata.description !== "string") {
+      if (
+        metadata.description !== undefined &&
+        typeof metadata.description !== "string"
+      ) {
         errors.push("'metadata.description' must be a string if provided");
       }
       if (metadata.tags !== undefined) {
@@ -217,9 +222,7 @@ export function validateJsonlLine(
 
   const result = validateFixture(parsed);
   if (!result.isValid) {
-    result.errors = result.errors.map(
-      (err) => `Line ${lineNumber}: ${err}`
-    );
+    result.errors = result.errors.map((err) => `Line ${lineNumber}: ${err}`);
   }
   if (result.warnings.length > 0) {
     result.warnings = result.warnings.map(
