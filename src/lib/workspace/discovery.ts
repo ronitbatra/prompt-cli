@@ -45,9 +45,14 @@ export function discoverWorkspace(startDir?: string): string {
 
     // If we've reached the filesystem root, stop searching
     if (parentDir === currentDir || parentDir === rootDir) {
+      const searchedFrom = startDir ?? process.cwd();
       throw new Error(
-        `No Promptforge workspace found. Run 'promptforge init' to create one.\n` +
-          `Searched from: ${startDir ?? process.cwd()}`
+        `No Promptforge workspace found.\n\n` +
+          `Searched from: ${searchedFrom}\n` +
+          `A workspace requires a 'promptforge.yaml' file in the root directory.\n\n` +
+          `To create a workspace, run:\n` +
+          `  prompt-cli init\n\n` +
+          `Or navigate to an existing workspace directory.`
       );
     }
 

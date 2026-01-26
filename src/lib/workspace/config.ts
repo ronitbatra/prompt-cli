@@ -17,8 +17,11 @@ export function loadConfig(workspaceRoot: string): PromptforgeConfig {
 
   if (!fs.existsSync(configPath)) {
     throw new Error(
-      `Config file not found: ${configPath}\n` +
-        "Run 'promptforge init' to create a workspace."
+      `Configuration file not found: ${configPath}\n\n` +
+        `This directory is not a Promptforge workspace.\n` +
+        `To initialize a workspace, run:\n` +
+        `  prompt-cli init\n\n` +
+        `Or navigate to an existing workspace directory.`
     );
   }
 
@@ -28,7 +31,12 @@ export function loadConfig(workspaceRoot: string): PromptforgeConfig {
 
     // Validate required fields
     if (!parsed.version) {
-      throw new Error("Config file must have a 'version' field");
+      throw new Error(
+        `Invalid configuration file: ${configPath}\n\n` +
+          `The 'version' field is required in promptforge.yaml.\n` +
+          `Please ensure your config file includes:\n` +
+          `  version: "1.0"`
+      );
     }
 
     // Merge with defaults
@@ -52,7 +60,24 @@ export function loadConfig(workspaceRoot: string): PromptforgeConfig {
     };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Failed to load config: ${error.message}`);
+      // Check if it's a YAML parsing error
+      if (error.message.includes("YAML") || error.message.includes("yaml")) {
+        throw new Error(
+          `Failed to parse configuration file: ${configPath}\n\n` +
+            `The file contains invalid YAML syntax.\n` +
+            `Error: ${error.message}\n\n` +
+            `Please check the syntax of your promptforge.yaml file.`
+        );
+      }
+      // Re-throw our custom errors as-is
+      if (error.message.includes("not found") || error.message.includes("Invalid")) {
+        throw error;
+      }
+      throw new Error(
+        `Failed to load configuration file: ${configPath}\n\n` +
+          `Error: ${error.message}\n\n` +
+          `Please ensure the file exists and is readable.`
+      );
     }
     throw error;
   }

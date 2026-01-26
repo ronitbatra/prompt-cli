@@ -68,9 +68,11 @@ export function renderTemplate(
   if (missing.length > 0) {
     if (missingVariableStrategy === "error") {
       throw new Error(
-        `Missing required variables: ${missing.join(", ")}\n` +
+        `Missing required template variables.\n\n` +
+          `Missing: ${missing.join(", ")}\n` +
           `Required: ${Array.from(requiredVariables).join(", ")}\n` +
-          `Provided: ${Object.keys(variables).join(", ")}`
+          `Provided: ${Object.keys(variables).join(", ") || "(none)"}\n\n` +
+          `Please provide all required variables when rendering this template.`
       );
     }
   }

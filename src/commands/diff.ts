@@ -19,23 +19,28 @@ import {
 
 export default class Diff extends Command {
   static override description =
-    "Compare two versions of a prompt and show differences";
+    "Compare two versions of a prompt and show the differences.\n" +
+    "Displays changes in both the template content and metadata between versions.";
 
   static override examples = [
     "<%= config.bin %> diff greeting@v1 greeting@v2",
-    "<%= config.bin %> diff greeting@v1 greeting",
-    "<%= config.bin %> diff greeting greeting@v2",
+    "<%= config.bin %> diff greeting@v1 greeting  # Compare v1 to latest",
+    "<%= config.bin %> diff greeting greeting@v2    # Compare latest to v2",
+    "<%= config.bin %> diff greeting@v1 greeting@v2 --template  # Show only template changes",
+    "<%= config.bin %> diff greeting@v1 greeting@v2 --metadata  # Show only metadata changes",
   ];
 
   static override flags = {
     template: Flags.boolean({
       char: "t",
-      description: "Show only template diff",
+      description:
+        "Show only the template diff (prompt content changes)",
       default: false,
     }),
     metadata: Flags.boolean({
       char: "m",
-      description: "Show only metadata diff",
+      description:
+        "Show only the metadata diff (version info, variables, tags, etc.)",
       default: false,
     }),
   };
@@ -43,12 +48,12 @@ export default class Diff extends Command {
   static override args = {
     oldVersion: Args.string({
       description:
-        "Old prompt version (e.g., 'greeting@v1' or 'greeting' for latest)",
+        "The older prompt version to compare (e.g., 'greeting@v1' or 'greeting' for latest version)",
       required: true,
     }),
     newVersion: Args.string({
       description:
-        "New prompt version (e.g., 'greeting@v2' or 'greeting' for latest)",
+        "The newer prompt version to compare (e.g., 'greeting@v2' or 'greeting' for latest version)",
       required: true,
     }),
   };
@@ -76,7 +81,13 @@ export default class Diff extends Command {
       // Validate that we're comparing the same prompt
       if (oldVersion.name !== newVersion.name) {
         this.error(
-          `Cannot compare different prompts: "${oldVersion.name}" vs "${newVersion.name}"`
+          `Cannot compare different prompts.\n\n` +
+            `You're trying to compare:\n` +
+            `  "${oldVersion.name}" (version ${oldVersion.version})\n` +
+            `  "${newVersion.name}" (version ${newVersion.version})\n\n` +
+            `Please compare versions of the same prompt, for example:\n` +
+            `  prompt-cli diff ${oldVersion.name}@v1 ${oldVersion.name}@v2\n` +
+            `  prompt-cli diff ${newVersion.name}@v1 ${newVersion.name}@v2`
         );
         return;
       }
@@ -160,9 +171,26 @@ export default class Diff extends Command {
       }
     } catch (error) {
       if (error instanceof Error) {
-        this.error(`Failed to compare prompts: ${error.message}`);
+        // Provide more context for common errors
+        if (error.message.includes("not found") || error.message.includes("Prompt")) {
+          this.error(error.message);
+        } else if (error.message.includes("workspace")) {
+          this.error(
+            `${error.message}\n\n` +
+              `Make sure you're running this command from within a Promptforge workspace.\n` +
+              `To create a workspace, run: prompt-cli init`
+          );
+        } else {
+          this.error(
+            `Failed to compare prompts: ${error.message}\n\n` +
+              `Please check that both prompt versions exist and try again.`
+          );
+        }
       } else {
-        this.error(`Failed to compare prompts: ${String(error)}`);
+        this.error(
+          `Failed to compare prompts: ${String(error)}\n\n` +
+            `Please check that both prompt versions exist and try again.`
+        );
       }
     }
   }

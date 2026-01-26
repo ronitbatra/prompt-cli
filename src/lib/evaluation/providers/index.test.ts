@@ -29,18 +29,18 @@ describe("Provider Registration", () => {
     expect(provider.getName()).toBe("test-mock");
   });
 
-  it("should create OpenAI provider from registry", async () => {
-    const config: BaseProviderConfig = {
-      type: "openai",
-      apiKey: "test-key",
-      name: "test-openai",
-    };
+    it("should create OpenAI provider from registry", async () => {
+      const config = {
+        type: "openai" as const,
+        apiKey: "test-key",
+        name: "test-openai",
+      };
 
-    const provider = await providerRegistry.create(config);
+      const provider = await providerRegistry.create(config);
 
-    expect(provider.getType()).toBe("openai");
-    expect(provider.getName()).toBe("test-openai");
-  });
+      expect(provider.getType()).toBe("openai");
+      expect(provider.getName()).toBe("test-openai");
+    });
 
   it("should list registered provider types", () => {
     const types = providerRegistry.getRegisteredTypes();

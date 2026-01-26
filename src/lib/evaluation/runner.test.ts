@@ -113,7 +113,7 @@ describe("Evaluation Runner", () => {
 
       expect(result.passed).toBe(false);
       expect(result.error).toBeDefined();
-      expect(result.error).toContain("Missing required variables");
+      expect(result.error).toContain("Missing required template variables");
     });
 
     it("should render prompt correctly", async () => {

@@ -1,7 +1,7 @@
 {
   "name": "prompt-cli",
   "version": "1.0.0",
-  "description": "for prompts",
+  "description": "A CLI tool for managing, versioning, and evaluating LLM prompts",
   "homepage": "https://github.com/ronitbatra/prompt-cli#readme",
   "bugs": {
     "url": "https://github.com/ronitbatra/prompt-cli/issues"

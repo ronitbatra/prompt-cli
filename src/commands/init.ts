@@ -10,7 +10,9 @@ import {
 import type { PromptforgeConfig } from "../lib/workspace/types";
 
 export default class Init extends Command {
-  static override description = "Initialize a new Promptforge workspace";
+  static override description =
+    "Initialize a new Promptforge workspace in the current directory.\n" +
+    "Creates a promptforge.yaml config file and sets up the prompts/, evals/, and runs/ directories.";
 
   static override examples = [
     "<%= config.bin %> init",
@@ -21,12 +23,14 @@ export default class Init extends Command {
   static override flags = {
     force: Flags.boolean({
       char: "f",
-      description: "Overwrite existing workspace files",
+      description:
+        "Overwrite existing workspace files if they already exist",
       default: false,
     }),
     name: Flags.string({
       char: "n",
-      description: "Workspace name",
+      description:
+        "Set a custom workspace name (used in promptforge.yaml)",
     }),
   };
 
@@ -38,8 +42,11 @@ export default class Init extends Command {
     const existingWorkspace = findWorkspace(workspaceRoot);
     if (existingWorkspace && !flags.force) {
       this.error(
-        `Workspace already exists at ${existingWorkspace}\n` +
-          "Use --force to overwrite existing files."
+        `A Promptforge workspace already exists at:\n` +
+          `  ${existingWorkspace}\n\n` +
+          `To overwrite existing files, use the --force flag:\n` +
+          `  prompt-cli init --force\n\n` +
+          `Warning: This will overwrite your existing promptforge.yaml file.`
       );
       return;
     }
@@ -70,7 +77,25 @@ export default class Init extends Command {
       this.log(`  3. Run '${this.config.bin} list' to see your prompts`);
     } catch (error) {
       if (error instanceof Error) {
-        this.error(`Failed to initialize workspace: ${error.message}`);
+        // Check for common errors and provide helpful messages
+        if (error.message.includes("EACCES") || error.message.includes("permission")) {
+          this.error(
+            `Permission denied: Cannot write to ${workspaceRoot}\n\n` +
+              `Please check that you have write permissions for this directory.`
+          );
+        } else if (error.message.includes("ENOSPC")) {
+          this.error(
+            `No space left on device: Cannot create workspace files.\n\n` +
+              `Please free up disk space and try again.`
+          );
+        } else {
+          this.error(
+            `Failed to initialize workspace: ${error.message}\n\n` +
+              `Please ensure you have write permissions and try again.`
+          );
+        }
+      } else {
+        this.error(`Failed to initialize workspace: ${String(error)}`);
       }
       throw error;
     }

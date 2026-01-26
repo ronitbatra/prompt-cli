@@ -131,9 +131,25 @@ export class OpenAIProvider implements Provider {
 
       if (!response.ok) {
         const errorData = (await response.json()) as OpenAIErrorResponse;
-        throw new Error(
-          `OpenAI API error: ${errorData.error?.message || response.statusText} (${response.status})`
-        );
+        const status = response.status;
+        const errorMsg = errorData.error?.message || response.statusText;
+        
+        // Provide helpful error messages for common status codes
+        let helpfulMessage = `OpenAI API error (${status}): ${errorMsg}`;
+        
+        if (status === 401) {
+          helpfulMessage +=
+            "\n\nYour API key is invalid or missing.\n" +
+            "Please check your OPENAI_API_KEY environment variable or config.";
+        } else if (status === 429) {
+          helpfulMessage +=
+            "\n\nRate limit exceeded. Please wait a moment and try again.";
+        } else if (status === 500 || status === 503) {
+          helpfulMessage +=
+            "\n\nOpenAI service is temporarily unavailable. Please try again later.";
+        }
+        
+        throw new Error(helpfulMessage);
       }
 
       const data = (await response.json()) as OpenAIResponse;

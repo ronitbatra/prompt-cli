@@ -62,7 +62,11 @@ export function saveResults(
  */
 export function loadResults(resultsPath: string): EvaluationRunResult {
   if (!fs.existsSync(resultsPath)) {
-    throw new Error(`Results file not found: ${resultsPath}`);
+    throw new Error(
+      `Results file not found: ${resultsPath}\n\n` +
+        `No evaluation results found at this path.\n` +
+        `Run an evaluation first: prompt-cli eval`
+    );
   }
 
   try {
@@ -71,15 +75,29 @@ export function loadResults(resultsPath: string): EvaluationRunResult {
 
     // Validate basic structure
     if (!results.startedAt || !results.completedAt || !results.fixtureResults) {
-      throw new Error("Invalid results file format");
+      throw new Error(
+        `Invalid results file format: ${resultsPath}\n\n` +
+          `The file exists but doesn't contain valid evaluation results.\n` +
+          `Expected fields: startedAt, completedAt, fixtureResults`
+      );
     }
 
     return results;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new Error(`Invalid JSON in results file: ${resultsPath}`);
+      throw new Error(
+        `Invalid JSON in results file: ${resultsPath}\n\n` +
+          `The file contains invalid JSON syntax.\n` +
+          `Error: ${error.message}`
+      );
     }
-    throw error;
+    if (error instanceof Error && error.message.includes("Invalid")) {
+      throw error;
+    }
+    throw new Error(
+      `Failed to load results file: ${resultsPath}\n\n` +
+        `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 

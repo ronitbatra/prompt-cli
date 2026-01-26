@@ -85,7 +85,7 @@ Thank you!`);
         renderTemplate(template, variables, {
           missingVariableStrategy: "error",
         });
-      }).toThrow("Missing required variables");
+      }).toThrow(/Missing required template variables/);
     });
 
     it("should replace missing variables with placeholder when strategy is 'warn'", () => {
@@ -361,7 +361,7 @@ Thank you!`);
         renderTemplate(template, variables, {
           missingVariableStrategy: "error",
         });
-      }).toThrow("Missing required variables");
+      }).toThrow(/Missing required template variables/);
     });
 
     it("should handle all missing variables with empty strategy", () => {

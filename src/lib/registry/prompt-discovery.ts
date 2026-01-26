@@ -363,7 +363,23 @@ export function loadPromptVersion(
       config
     );
     if (!promptVersion) {
-      throw new Error(`Prompt version not found: ${name}@${version}`);
+      const promptsDir = path.join(
+        workspaceRoot,
+        getConfigPath(config, "prompts")
+      );
+      const availablePrompts = discoverPrompts(workspaceRoot, config)
+        .map((p) => p.name)
+        .join(", ");
+      
+      throw new Error(
+        `Prompt version not found: ${name}@${version}\n\n` +
+          `Expected location: ${promptsDir}/${name}/${version}/\n\n` +
+          (availablePrompts
+            ? `Available prompts: ${availablePrompts}\n\n`
+            : `No prompts found in ${promptsDir}/\n\n`) +
+          `To see all available prompts and versions, run:\n` +
+          `  prompt-cli list`
+      );
     }
     return promptVersion;
   }
@@ -371,11 +387,36 @@ export function loadPromptVersion(
   // Otherwise, load the latest version
   const prompt = discoverPrompt(workspaceRoot, name, config);
   if (!prompt) {
-    throw new Error(`Prompt not found: ${name}`);
+    const promptsDir = path.join(
+      workspaceRoot,
+      getConfigPath(config, "prompts")
+    );
+    const availablePrompts = discoverPrompts(workspaceRoot, config)
+      .map((p) => p.name)
+      .join(", ");
+    
+    throw new Error(
+      `Prompt not found: ${name}\n\n` +
+        `Expected location: ${promptsDir}/${name}/\n\n` +
+        (availablePrompts
+          ? `Available prompts: ${availablePrompts}\n\n`
+          : `No prompts found in ${promptsDir}/\n\n`) +
+        `To see all available prompts, run:\n` +
+        `  prompt-cli list\n\n` +
+        `To create a new prompt, create a directory at:\n` +
+        `  ${promptsDir}/${name}/v1/`
+    );
   }
 
   if (prompt.versions.length === 0) {
-    throw new Error(`Prompt "${name}" has no valid versions`);
+    throw new Error(
+      `Prompt "${name}" has no valid versions\n\n` +
+        `The prompt directory exists but contains no version directories.\n` +
+        `Expected structure:\n` +
+        `  prompts/${name}/v1/${name}.prompt.md\n` +
+        `  prompts/${name}/v1/${name}.meta.json\n\n` +
+        `Please ensure at least one version directory exists.`
+    );
   }
 
   // Get the latest version (already sorted in discoverPrompt)

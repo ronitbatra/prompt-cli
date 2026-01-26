@@ -142,7 +142,18 @@ export function requireOpenAIKey(explicitKey?: string): string {
     explicit: explicitKey,
     envVars: ["OPENAI_API_KEY", "OPENAI_KEY"],
     errorMessage:
-      "OpenAI API key is required. Set OPENAI_API_KEY environment variable or provide apiKey in config.",
+      "OpenAI API key is required.\n\n" +
+      "You can provide it in one of these ways:\n" +
+      "  1. Set the OPENAI_API_KEY environment variable:\n" +
+      "     export OPENAI_API_KEY=your-api-key\n\n" +
+      "  2. Set the OPENAI_KEY environment variable:\n" +
+      "     export OPENAI_KEY=your-api-key\n\n" +
+      "  3. Provide it in your promptforge.yaml config:\n" +
+      "     provider:\n" +
+      "       type: openai\n" +
+      "       openai:\n" +
+      "         apiKey: your-api-key\n\n" +
+      "Get your API key from: https://platform.openai.com/api-keys",
   });
 }
 
@@ -173,7 +184,18 @@ export function requireAnthropicKey(explicitKey?: string): string {
     explicit: explicitKey,
     envVars: ["ANTHROPIC_API_KEY", "ANTHROPIC_KEY"],
     errorMessage:
-      "Anthropic API key is required. Set ANTHROPIC_API_KEY environment variable or provide apiKey in config.",
+      "Anthropic API key is required.\n\n" +
+      "You can provide it in one of these ways:\n" +
+      "  1. Set the ANTHROPIC_API_KEY environment variable:\n" +
+      "     export ANTHROPIC_API_KEY=your-api-key\n\n" +
+      "  2. Set the ANTHROPIC_KEY environment variable:\n" +
+      "     export ANTHROPIC_KEY=your-api-key\n\n" +
+      "  3. Provide it in your promptforge.yaml config:\n" +
+      "     provider:\n" +
+      "       type: anthropic\n" +
+      "       anthropic:\n" +
+      "         apiKey: your-api-key\n\n" +
+      "Get your API key from: https://console.anthropic.com/",
   });
 }
 
