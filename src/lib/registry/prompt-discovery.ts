@@ -370,7 +370,7 @@ export function loadPromptVersion(
       const availablePrompts = discoverPrompts(workspaceRoot, config)
         .map((p) => p.name)
         .join(", ");
-      
+
       throw new Error(
         `Prompt version not found: ${name}@${version}\n\n` +
           `Expected location: ${promptsDir}/${name}/${version}/\n\n` +
@@ -394,7 +394,7 @@ export function loadPromptVersion(
     const availablePrompts = discoverPrompts(workspaceRoot, config)
       .map((p) => p.name)
       .join(", ");
-    
+
     throw new Error(
       `Prompt not found: ${name}\n\n` +
         `Expected location: ${promptsDir}/${name}/\n\n` +

@@ -150,15 +150,11 @@ export function aggregateResults(
   }
 
   // Aggregate latency
-  const runsWithLatency = results.filter(
-    (r) => r.averageLatency !== undefined
-  );
+  const runsWithLatency = results.filter((r) => r.averageLatency !== undefined);
   const averageLatency =
     runsWithLatency.length > 0
-      ? runsWithLatency.reduce(
-          (sum, r) => sum + (r.averageLatency || 0),
-          0
-        ) / runsWithLatency.length
+      ? runsWithLatency.reduce((sum, r) => sum + (r.averageLatency || 0), 0) /
+        runsWithLatency.length
       : undefined;
 
   // Aggregate duration
@@ -233,8 +229,8 @@ export function aggregateRuns(
 
       // Filter by prompt name
       if (promptName) {
-        const hasPrompt = result.fixtureResults.some(
-          (fr) => fr.fixture.prompt.includes(promptName)
+        const hasPrompt = result.fixtureResults.some((fr) =>
+          fr.fixture.prompt.includes(promptName)
         );
         if (!hasPrompt) {
           continue;

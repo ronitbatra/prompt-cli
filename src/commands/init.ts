@@ -23,14 +23,12 @@ export default class Init extends Command {
   static override flags = {
     force: Flags.boolean({
       char: "f",
-      description:
-        "Overwrite existing workspace files if they already exist",
+      description: "Overwrite existing workspace files if they already exist",
       default: false,
     }),
     name: Flags.string({
       char: "n",
-      description:
-        "Set a custom workspace name (used in promptforge.yaml)",
+      description: "Set a custom workspace name (used in promptforge.yaml)",
     }),
   };
 
@@ -78,7 +76,10 @@ export default class Init extends Command {
     } catch (error) {
       if (error instanceof Error) {
         // Check for common errors and provide helpful messages
-        if (error.message.includes("EACCES") || error.message.includes("permission")) {
+        if (
+          error.message.includes("EACCES") ||
+          error.message.includes("permission")
+        ) {
           this.error(
             `Permission denied: Cannot write to ${workspaceRoot}\n\n` +
               `Please check that you have write permissions for this directory.`

@@ -70,7 +70,10 @@ export function loadConfig(workspaceRoot: string): PromptforgeConfig {
         );
       }
       // Re-throw our custom errors as-is
-      if (error.message.includes("not found") || error.message.includes("Invalid")) {
+      if (
+        error.message.includes("not found") ||
+        error.message.includes("Invalid")
+      ) {
         throw error;
       }
       throw new Error(

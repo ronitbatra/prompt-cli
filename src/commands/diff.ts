@@ -33,8 +33,7 @@ export default class Diff extends Command {
   static override flags = {
     template: Flags.boolean({
       char: "t",
-      description:
-        "Show only the template diff (prompt content changes)",
+      description: "Show only the template diff (prompt content changes)",
       default: false,
     }),
     metadata: Flags.boolean({
@@ -172,7 +171,10 @@ export default class Diff extends Command {
     } catch (error) {
       if (error instanceof Error) {
         // Provide more context for common errors
-        if (error.message.includes("not found") || error.message.includes("Prompt")) {
+        if (
+          error.message.includes("not found") ||
+          error.message.includes("Prompt")
+        ) {
           this.error(error.message);
         } else if (error.message.includes("workspace")) {
           this.error(

@@ -12,9 +12,7 @@ import { Colors, createHeader, colorize } from "../diff/terminal-format";
  * @param result - Single evaluation run result
  * @returns Formatted report string
  */
-export function formatDetailedReport(
-  result: EvaluationRunResult
-): string {
+export function formatDetailedReport(result: EvaluationRunResult): string {
   const lines: string[] = [];
 
   // Header
@@ -51,7 +49,9 @@ export function formatDetailedReport(
       const description = fixture.fixture.metadata?.description || "";
       const descText = description ? ` - ${description}` : "";
 
-      lines.push(`  ${index + 1}. ${colorize(promptRef, Colors.red)}${descText}`);
+      lines.push(
+        `  ${index + 1}. ${colorize(promptRef, Colors.red)}${descText}`
+      );
 
       // Show failed expectations
       const failedExpectations = fixture.expectationResults.filter(
@@ -74,7 +74,9 @@ export function formatDetailedReport(
           }
           lines.push(`     ${colorize("✗", Colors.red)} ${expDesc}`);
           if (expResult.error) {
-            lines.push(`       ${colorize(`Error: ${expResult.error}`, Colors.dim)}`);
+            lines.push(
+              `       ${colorize(`Error: ${expResult.error}`, Colors.dim)}`
+            );
           }
         });
       }
@@ -96,7 +98,9 @@ export function formatDetailedReport(
     });
   } else {
     lines.push(createHeader("Failures", 70));
-    lines.push(`  ${colorize("No failures - all fixtures passed!", Colors.green)}`);
+    lines.push(
+      `  ${colorize("No failures - all fixtures passed!", Colors.green)}`
+    );
     lines.push("");
   }
 
@@ -165,9 +169,7 @@ export function formatDetailedReport(
  * @param aggregated - Aggregated results from multiple runs
  * @returns Formatted report string
  */
-export function formatAggregatedReport(
-  aggregated: AggregatedResults
-): string {
+export function formatAggregatedReport(aggregated: AggregatedResults): string {
   const lines: string[] = [];
 
   // Header
@@ -200,10 +202,14 @@ export function formatAggregatedReport(
   lines.push("");
 
   // Failures Summary
-  const allFailedFixtures = aggregated.allFixtureResults.filter((r) => !r.passed);
+  const allFailedFixtures = aggregated.allFixtureResults.filter(
+    (r) => !r.passed
+  );
   if (allFailedFixtures.length > 0) {
     lines.push(createHeader("Failures Summary", 70));
-    lines.push(`  ${colorize("Total Failures:", Colors.red)} ${allFailedFixtures.length}`);
+    lines.push(
+      `  ${colorize("Total Failures:", Colors.red)} ${allFailedFixtures.length}`
+    );
 
     // Group failures by prompt
     const failuresByPrompt = new Map<string, FixtureResult[]>();
@@ -218,7 +224,9 @@ export function formatAggregatedReport(
     lines.push("");
     lines.push(`  ${colorize("Failures by Prompt:", Colors.bright)}`);
     failuresByPrompt.forEach((failures, prompt) => {
-      lines.push(`    ${colorize(prompt, Colors.red)}: ${failures.length} failure(s)`);
+      lines.push(
+        `    ${colorize(prompt, Colors.red)}: ${failures.length} failure(s)`
+      );
     });
     lines.push("");
   } else {
@@ -229,7 +237,9 @@ export function formatAggregatedReport(
 
   // Metrics Section
   lines.push(createHeader("Metrics", 70));
-  lines.push(`  ${colorize("Total Runs:", Colors.bright)} ${aggregated.totalRuns}`);
+  lines.push(
+    `  ${colorize("Total Runs:", Colors.bright)} ${aggregated.totalRuns}`
+  );
   lines.push(
     `  ${colorize("Total Duration:", Colors.bright)} ${(aggregated.totalDuration / 1000).toFixed(2)}s`
   );

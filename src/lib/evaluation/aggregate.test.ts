@@ -227,8 +227,12 @@ describe("Result Aggregation", () => {
       const aggregated = aggregateResults(results);
 
       expect(aggregated.allFixtureResults).toHaveLength(2);
-      expect(aggregated.allFixtureResults[0].fixture.prompt).toBe("greeting@v1");
-      expect(aggregated.allFixtureResults[1].fixture.prompt).toBe("greeting@v2");
+      expect(aggregated.allFixtureResults[0].fixture.prompt).toBe(
+        "greeting@v1"
+      );
+      expect(aggregated.allFixtureResults[1].fixture.prompt).toBe(
+        "greeting@v2"
+      );
     });
   });
 

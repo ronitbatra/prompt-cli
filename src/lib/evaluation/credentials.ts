@@ -1,6 +1,6 @@
 /**
  * Credential management for LLM providers
- * 
+ *
  * This module provides utilities for reading credentials from environment variables
  * and other sources. It supports multiple credential sources and provides clear
  * error messages when credentials are missing.
@@ -59,9 +59,7 @@ export interface CredentialResult {
  * @param options - Credential reading options
  * @returns Credential result with value and source information
  */
-export function readCredential(
-  options: CredentialOptions
-): CredentialResult {
+export function readCredential(options: CredentialOptions): CredentialResult {
   // Priority 1: Explicit value
   if (options.explicit !== undefined && options.explicit.trim() !== "") {
     return {
@@ -227,7 +225,8 @@ export function getCredentialInfo(options: CredentialOptions): {
   const envVars = options.envVars || [];
 
   const envVarsFound = envVars.filter(
-    (envVar) => process.env[envVar] !== undefined && process.env[envVar]!.trim() !== ""
+    (envVar) =>
+      process.env[envVar] !== undefined && process.env[envVar]!.trim() !== ""
   );
 
   return {

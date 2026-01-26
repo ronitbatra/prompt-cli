@@ -60,7 +60,8 @@ export default class Eval extends Command {
     }),
     file: Flags.string({
       char: "f",
-      description: "Specific JSONL file to evaluate (default: all files in evals/)",
+      description:
+        "Specific JSONL file to evaluate (default: all files in evals/)",
     }),
     provider: Flags.string({
       char: "p",
@@ -70,7 +71,7 @@ export default class Eval extends Command {
       description: "Don't save results to runs/ directory",
       default: false,
     }),
-    "detailed": Flags.boolean({
+    detailed: Flags.boolean({
       description: "Show detailed report with pass rate, failures, and metrics",
       default: false,
     }),
@@ -83,8 +84,7 @@ export default class Eval extends Command {
 
   static override args = {
     jsonlFile: Args.string({
-      description:
-        "Optional JSONL file to evaluate (if not using --file flag)",
+      description: "Optional JSONL file to evaluate (if not using --file flag)",
       required: false,
     }),
   };
@@ -104,7 +104,11 @@ export default class Eval extends Command {
       }
 
       // Handle aggregation flags
-      if (flags.aggregate || flags["aggregate-prompt"] || flags["aggregate-recent"]) {
+      if (
+        flags.aggregate ||
+        flags["aggregate-prompt"] ||
+        flags["aggregate-recent"]
+      ) {
         await this.showAggregatedResults(workspaceRoot, config, flags);
         return;
       }
@@ -223,7 +227,9 @@ export default class Eval extends Command {
       const overallPassRate = (aggregated.overallPassRate * 100).toFixed(1);
       const parts: string[] = [];
       parts.push(`${aggregated.totalRuns} runs`);
-      parts.push(`${aggregated.totalPassed}/${aggregated.totalFixtures} passed`);
+      parts.push(
+        `${aggregated.totalPassed}/${aggregated.totalFixtures} passed`
+      );
       parts.push(`${overallPassRate}% pass rate`);
       parts.push(`${(aggregated.totalDuration / 1000).toFixed(1)}s total`);
       if (aggregated.totalTokens) {
@@ -257,7 +263,9 @@ export default class Eval extends Command {
       }
 
       if (aggregated.averageLatency) {
-        this.log(`  Average Latency: ${aggregated.averageLatency.toFixed(0)}ms`);
+        this.log(
+          `  Average Latency: ${aggregated.averageLatency.toFixed(0)}ms`
+        );
       }
 
       this.log(
@@ -330,7 +338,9 @@ export default class Eval extends Command {
     if (!flags["no-save"]) {
       const latestPath = getLatestResults(workspaceRoot, config);
       if (latestPath) {
-        this.log(`\nResults saved to: ${path.relative(workspaceRoot, latestPath)}`);
+        this.log(
+          `\nResults saved to: ${path.relative(workspaceRoot, latestPath)}`
+        );
       }
     }
 

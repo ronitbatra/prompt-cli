@@ -123,16 +123,22 @@ function formatSummaryStats(result: EvaluationRunResult): string {
   lines.push(
     `  ${colorize("Started:", Colors.dim)} ${new Date(result.startedAt).toLocaleString()}`
   );
-  
+
   // Latency and token usage
   if (result.averageLatency !== undefined) {
-    lines.push(`  ${colorize("Avg Latency:", Colors.dim)} ${result.averageLatency.toFixed(0)}ms`);
+    lines.push(
+      `  ${colorize("Avg Latency:", Colors.dim)} ${result.averageLatency.toFixed(0)}ms`
+    );
   }
   if (result.totalLatency !== undefined) {
-    lines.push(`  ${colorize("Total Latency:", Colors.dim)} ${result.totalLatency.toFixed(0)}ms`);
+    lines.push(
+      `  ${colorize("Total Latency:", Colors.dim)} ${result.totalLatency.toFixed(0)}ms`
+    );
   }
   if (result.totalTokens) {
-    lines.push(`  ${colorize("Total Tokens:", Colors.dim)} ${result.totalTokens.total.toLocaleString()} (${result.totalTokens.input.toLocaleString()} in, ${result.totalTokens.output.toLocaleString()} out)`);
+    lines.push(
+      `  ${colorize("Total Tokens:", Colors.dim)} ${result.totalTokens.total.toLocaleString()} (${result.totalTokens.input.toLocaleString()} in, ${result.totalTokens.output.toLocaleString()} out)`
+    );
   }
   lines.push("");
 

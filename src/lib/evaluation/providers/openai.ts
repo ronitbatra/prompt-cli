@@ -1,6 +1,6 @@
 /**
  * OpenAI provider implementation
- * 
+ *
  * This provider integrates with OpenAI's API to generate real LLM outputs.
  */
 
@@ -133,10 +133,10 @@ export class OpenAIProvider implements Provider {
         const errorData = (await response.json()) as OpenAIErrorResponse;
         const status = response.status;
         const errorMsg = errorData.error?.message || response.statusText;
-        
+
         // Provide helpful error messages for common status codes
         let helpfulMessage = `OpenAI API error (${status}): ${errorMsg}`;
-        
+
         if (status === 401) {
           helpfulMessage +=
             "\n\nYour API key is invalid or missing.\n" +
@@ -148,7 +148,7 @@ export class OpenAIProvider implements Provider {
           helpfulMessage +=
             "\n\nOpenAI service is temporarily unavailable. Please try again later.";
         }
-        
+
         throw new Error(helpfulMessage);
       }
 
@@ -201,10 +201,7 @@ export class OpenAIProvider implements Provider {
     }
 
     // Validate temperature range
-    if (
-      this.config.temperature < 0 ||
-      this.config.temperature > 2
-    ) {
+    if (this.config.temperature < 0 || this.config.temperature > 2) {
       throw new Error(
         `Temperature must be between 0 and 2, got ${this.config.temperature}`
       );

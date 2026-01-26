@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, beforeAll } from "vitest";
-import { createProviderFromConfig, getDefaultProviderType } from "./provider-factory";
+import {
+  createProviderFromConfig,
+  getDefaultProviderType,
+} from "./provider-factory";
 import type { PromptforgeConfig } from "../workspace/types";
 import { registerProviders } from "./providers/index";
 
